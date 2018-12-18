@@ -3,13 +3,22 @@
   "private": true,
   "version": "1.0.0",
   "description": "SSH client",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "ssh"
   ],
   "author": "Kireev Anatoly",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^8.10.38",
+    "typescript": "^3.2.2"
+  },
+  "engines": {
+    "node" : ">=8.10" 
+  }
 }
