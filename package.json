@@ -8,8 +8,9 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "tslint -p tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "precommit": "npm run lint"
+    "test": "jest",
+    "precommit": "npm run lint",
+    "prepush": "npm run lint && npm test unit"
   },
   "keywords": [
     "ssh"
@@ -17,13 +18,35 @@
   "author": "Kireev Anatoly",
   "license": "MIT",
   "devDependencies": {
+    "@types/jest": "^23.3.10",
     "@types/node": "^8.10.38",
     "husky": "^1.3.0",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
     "tslint": "^5.12.0",
     "tslint-config-airbnb": "^5.11.1",
     "typescript": "^3.2.2"
   },
   "engines": {
     "node": ">=8.10"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ],
+    "transform": {
+      "\\.ts$": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts)$",
+    "testPathIgnorePatterns": [
+      "\\.snap$",
+      "<rootDir>/node_modules/"
+    ],
+    "modulePaths": [
+      "<rootDir>/src"
+    ]
   }
 }
