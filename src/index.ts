@@ -1,6 +1,7 @@
 import commander from 'commander';
 
 import { ICredentials } from './interfaces';
+import Session from './session';
 import { parseConnectionArg } from './utils';
 
 commander
@@ -8,7 +9,6 @@ commander
   .command('* [user:password@hostname]')
   .description('connect to ssh server')
   .action((args) => {
-    // const arg = 'root:pxtm0222@10.8.0.22';
     const connectionConfig = parseConnectionArg(args);
     const session = createSession(connectionConfig);
   });
@@ -16,6 +16,18 @@ commander
 function createSession (config: ICredentials) {
   // tslint:disable-next-line:no-console
   console.log(`Connecting to ${config.host}...`);
+  const session = new Session();
+  session
+    .connect(config)
+    .then(
+      (banner) => {
+        // tslint:disable-next-line:no-console
+        console.log(banner);
+      },
+      // tslint:disable-next-line:no-console
+      err => console.error(err),
+    );
+  return session;
 }
 
 commander.parse(process.argv);
