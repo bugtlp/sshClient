@@ -1,4 +1,5 @@
-import { Client } from 'ssh2';
+import { EOL } from 'os';
+import { Client, ClientChannel } from 'ssh2';
 import { Transform } from 'stream';
 
 import Command from './commands';
@@ -8,29 +9,19 @@ import Command from './commands';
  *
  * @class Invoker
  */
-class Invoker {
+class Invoker extends Transform {
   constructor (
     private connection: Client,
+    private channel: ClientChannel,
     private commands = ['get'],
-  ) {}
-
-  /**
-   * Create parser transfer stream.
-   *
-   * @returns
-   * @memberof Invoker
-   */
-  createParser () {
-    const stream = new Transform({
-      transform: this.parseCommand.bind(this),
-    });
-    stream.on('error', this.onError);
-    return stream;
+  ) {
+    super();
+    this.on('error', this.onError);
   }
 
-  onError (err: Error): any {
-    // tslint:disable-next-line:no-console
-    console.error(err);
+  onError = (err: Error) => {
+    this.channel.stderr.push(Buffer.from(err.message));
+    this.push(EOL);
   }
 
   /**
@@ -41,12 +32,16 @@ class Invoker {
    * @param {*} callback
    * @memberof Invoker
    */
-  parseCommand (chunk: string | Buffer, encoding: string, callback: any) {
+  // tslint:disable-next-line:function-name
+  _transform (chunk: string | Buffer, encoding: string, callback: any) {
     const [cmd, ...args] = chunk.toString().trim().split(' ');
     if (this.commands.includes(cmd)) {
       this.executeCommand(cmd, args)
-        .then(result => callback(null, result))
-        .catch(err => callback(err));
+        .then(_ => callback(null, EOL))
+        .catch((err) => {
+          this.onError(err);
+          callback();
+        });
     } else {
       callback(null, chunk);
     }
@@ -54,7 +49,7 @@ class Invoker {
 
   async executeCommand (cmd: string, args: string[]) {
     const command = new Command(this.connection);
-    await command.execute(...args);
+    return command.execute(...args);
   }
 }
 

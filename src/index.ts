@@ -24,6 +24,7 @@ function createSession (config: ICredentials) {
         // tslint:disable-next-line:no-console
         console.log(banner);
         return session.bind({
+          stderr: process.stderr,
           stdin: process.stdin,
           stdout: process.stdout,
         });

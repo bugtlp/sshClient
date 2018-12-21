@@ -5,6 +5,7 @@ import Invoker from './invoker';
 interface IChannel {
   stdin: any;
   stdout: any;
+  stderr: any;
 }
 
 class Session {
@@ -56,7 +57,7 @@ class Session {
         if (err) {
           return reject(err);
         }
-        const invoker = new Invoker(connection);
+        const invoker = new Invoker(connection, stream);
         stream.on('close', () => {
           stream.end();
           channel.stdin.unpipe(stream);
@@ -64,8 +65,9 @@ class Session {
           connection.end();
         });
         stream.pipe(channel.stdout);
+        stream.stderr.pipe(channel.stderr);
         channel.stdin
-          .pipe(invoker.createParser())
+          .pipe(invoker)
           .pipe(stream);
         resolve(true);
       });
