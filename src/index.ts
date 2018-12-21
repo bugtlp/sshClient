@@ -23,6 +23,10 @@ function createSession (config: ICredentials) {
       (banner) => {
         // tslint:disable-next-line:no-console
         console.log(banner);
+        return session.bind({
+          stdin: process.stdin,
+          stdout: process.stdout,
+        });
       },
       // tslint:disable-next-line:no-console
       err => console.error(err),
