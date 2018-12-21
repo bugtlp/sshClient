@@ -1,3 +1,4 @@
+import { EOL } from 'os';
 import { ICredentials } from './interfaces';
 
 /**
@@ -19,4 +20,8 @@ export function parseConnectionArg (connectionArg: string): ICredentials {
     // tslint:disable-next-line:object-literal-sort-keys
     port: +port || 22,
   };
+}
+
+export function print (message: string, io = process.stdout) {
+  io.write(`${message}${EOL}`);
 }

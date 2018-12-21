@@ -2,7 +2,7 @@ import commander from 'commander';
 
 import { ICredentials } from './interfaces';
 import Session from './session';
-import { parseConnectionArg } from './utils';
+import { parseConnectionArg, print } from './utils';
 
 commander
   .version('1.0.0')
@@ -10,27 +10,21 @@ commander
   .description('connect to ssh server')
   .action((args) => {
     const connectionConfig = parseConnectionArg(args);
-    const session = createSession(connectionConfig);
+    createSession(connectionConfig);
   });
 
 function createSession (config: ICredentials) {
-  // tslint:disable-next-line:no-console
-  console.log(`Connecting to ${config.host}...`);
+  const { stdin, stdout, stderr } = process;
+  print(`Connecting to ${config.host}...`);
   const session = new Session();
   session
     .connect(config)
     .then(
       (banner) => {
-        // tslint:disable-next-line:no-console
-        console.log(banner);
-        return session.bind({
-          stderr: process.stderr,
-          stdin: process.stdin,
-          stdout: process.stdout,
-        });
+        print(`${banner}`);
+        return session.bind({ stderr, stdin, stdout });
       },
-      // tslint:disable-next-line:no-console
-      err => console.error(err),
+      (err: Error) => print(err.message, stderr),
     );
   return session;
 }
