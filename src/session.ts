@@ -1,5 +1,6 @@
 import { Client } from 'ssh2';
 import { ICredentials } from './interfaces';
+import Invoker from './invoker';
 
 interface IChannel {
   stdin: any;
@@ -55,6 +56,7 @@ class Session {
         if (err) {
           return reject(err);
         }
+        const invoker = new Invoker(connection);
         stream.on('close', () => {
           stream.end();
           channel.stdin.unpipe(stream);
@@ -62,7 +64,9 @@ class Session {
           connection.end();
         });
         stream.pipe(channel.stdout);
-        channel.stdin.pipe(stream);
+        channel.stdin
+          .pipe(invoker.createParser())
+          .pipe(stream);
         resolve(true);
       });
     });
