@@ -1,6 +1,8 @@
 import { Client } from 'ssh2';
 import { Transform } from 'stream';
 
+import Command from './commands';
+
 /**
  * Command invoker.
  *
@@ -51,7 +53,8 @@ class Invoker {
   }
 
   async executeCommand (cmd: string, args: string[]) {
-    return 'yes!';
+    const command = new Command(this.connection);
+    await command.execute(...args);
   }
 }
 
