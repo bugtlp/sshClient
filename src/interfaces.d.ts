@@ -11,3 +11,14 @@ export interface ICredentials {
   host: string;
   port: number;
 }
+
+/**
+ * Interface of channel to bind session.
+ *
+ * @interface IChannel
+ */
+interface IChannel {
+  stdin: NodeJS.ReadStream;
+  stdout: NodeJS.WriteStream;
+  stderr: NodeJS.WriteStream;
+}

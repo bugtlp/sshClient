@@ -1,12 +1,6 @@
 import { Client } from 'ssh2';
-import { ICredentials } from './interfaces';
+import { IChannel, ICredentials } from './interfaces';
 import Invoker from './invoker';
-
-interface IChannel {
-  stdin: any;
-  stdout: any;
-  stderr: any;
-}
 
 class Session {
   private connection: Client | null;
