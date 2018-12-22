@@ -5,6 +5,7 @@
   "description": "SSH client",
   "main": "dist/index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "tslint -p tsconfig.json",
