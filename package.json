@@ -17,10 +17,15 @@
   ],
   "author": "Kireev Anatoly",
   "license": "MIT",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "ssh2": "0.6.1",
+    "tslib": "1.9.3"
+  },
   "devDependencies": {
     "@types/jest": "^23.3.10",
     "@types/node": "^8.10.38",
-    "@types/ssh2": "0.5.37",
+    "@types/ssh2": "^0.5.37",
     "husky": "^1.3.0",
     "jest": "^23.6.0",
     "ts-jest": "^23.10.5",
@@ -49,9 +54,5 @@
     "modulePaths": [
       "<rootDir>/src"
     ]
-  },
-  "dependencies": {
-    "commander": "^2.19.0",
-    "ssh2": "0.6.1"
   }
 }
