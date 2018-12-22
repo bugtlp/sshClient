@@ -5,6 +5,7 @@ import { Transform } from 'stream';
 import {
   Command,
   GetFileCommand,
+  PutFileCommand,
 } from './commands';
 
 /**
@@ -15,6 +16,7 @@ import {
 class Invoker extends Transform {
   static commands: { [x: string]: typeof Command } = {
     get: GetFileCommand,
+    put: PutFileCommand,
   };
 
   constructor (
