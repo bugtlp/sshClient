@@ -2,7 +2,10 @@ import { EOL } from 'os';
 import { Client, ClientChannel } from 'ssh2';
 import { Transform } from 'stream';
 
-import Command from './commands';
+import {
+  Command,
+  GetFileCommand,
+} from './commands';
 
 /**
  * Command invoker.
@@ -10,10 +13,13 @@ import Command from './commands';
  * @class Invoker
  */
 class Invoker extends Transform {
+  static commands: { [x: string]: typeof Command } = {
+    get: GetFileCommand,
+  };
+
   constructor (
     private connection: Client,
     private channel: ClientChannel,
-    private commands = ['get'],
   ) {
     super();
     this.on('error', this.onError);
@@ -35,7 +41,7 @@ class Invoker extends Transform {
   // tslint:disable-next-line:function-name
   _transform (chunk: string | Buffer, encoding: string, callback: any) {
     const [cmd, ...args] = chunk.toString().trim().split(' ');
-    if (this.commands.includes(cmd)) {
+    if (Invoker.commands[cmd] !== undefined) {
       this.executeCommand(cmd, args)
         .then(_ => callback(null, EOL))
         .catch((err) => {
@@ -48,7 +54,9 @@ class Invoker extends Transform {
   }
 
   async executeCommand (cmd: string, args: string[]) {
-    const command = new Command(this.connection);
+    // tslint:disable-next-line:variable-name
+    const ConcreateCommand = Invoker.commands[cmd];
+    const command = new ConcreateCommand(this.connection);
     return command.execute(...args);
   }
 }
